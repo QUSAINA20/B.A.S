@@ -37,6 +37,12 @@ class UserController extends Controller
         $accessToken = $user->createToken('authToken')->accessToken;
         return response(['user' => $user, 'access_token' => $accessToken]);
     }
+    public function showAllUsers()
+    {
+        $users = User::where('is_admin', 0)->paginate(10);
+
+        return response()->json(['users' => $users]);
+    }
 
     public function upload(Request $request, User $user)
     {
@@ -56,11 +62,15 @@ class UserController extends Controller
     public function showFiles(User $user)
     {
         $files = $user->getMedia('documents');
-        $urls = $files->map(function ($file) {
-            return asset($file->getUrl());
+        $fileData = $files->map(function ($file) {
+            return [
+                'id' => $file->id,
+                'url' => asset($file->getUrl())
+            ];
         });
-        return response()->json(['urls' => $urls]);
+        return response()->json(['files' => $fileData]);
     }
+
 
     public function deleteFiles(Request $request, User $user)
     {
