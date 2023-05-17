@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\Api\UserController as AdminUserController;
+use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +17,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+
+Route::post('/login', [LoginController::class, 'login']);
+
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('/upload', [UserController::class, 'upload']);
+    Route::get('/files', [UserController::class, 'showFiles']);
+    Route::delete('/files', [UserController::class, 'deleteFiles']);
+    Route::get('/soft-delete-files', [UserController::class, 'showSoftDeleteFiles']);
+    Route::get('/total-file-size', [UserController::class, 'getTotalFileSize']);
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('/admin/register', [AdminUserController::class, 'register']);
+    Route::post('/admin/user/{user}/upload', [AdminUserController::class, 'upload']);
+    Route::get('/admin/user/{user}/files', [AdminUserController::class, 'showFiles']);
+    Route::delete('/admin/user/{user}/files', [AdminUserController::class, 'deleteFiles']);
 });
