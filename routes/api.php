@@ -32,8 +32,9 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/empty-trash', [UserController::class, 'emptyTrash']);
 });
 
-Route::post('/admin/register', [AdminUserController::class, 'register']);
+
 Route::middleware('auth:api')->group(function () {
+    Route::post('/admin/register', [AdminUserController::class, 'register']);
     Route::get('/admin/users', [AdminUserController::class, 'showAllUsers']);
     Route::post('/admin/user/{user}/upload', [AdminUserController::class, 'upload']);
     Route::get('/admin/user/{user}/files', [AdminUserController::class, 'showFiles']);
