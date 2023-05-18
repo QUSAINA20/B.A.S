@@ -23,6 +23,7 @@ Route::post('/login', [LoginController::class, 'login']);
 
 
 Route::middleware('auth:api')->group(function () {
+    Route::post('/logout', [LogoutController::class, 'logout']);
     Route::post('/upload', [UserController::class, 'upload']);
     Route::get('/files', [UserController::class, 'showFiles']);
     Route::delete('/files', [UserController::class, 'deleteFiles']);
@@ -34,6 +35,7 @@ Route::middleware('auth:api')->group(function () {
 
 
 Route::middleware('auth:api')->group(function () {
+    Route::post('/admin/logout', [LogoutController::class, 'logout']);
     Route::post('/admin/register', [AdminUserController::class, 'register']);
     Route::get('/admin/users', [AdminUserController::class, 'showAllUsers']);
     Route::post('/admin/user/{user}/upload', [AdminUserController::class, 'upload']);
