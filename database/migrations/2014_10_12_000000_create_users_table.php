@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('fullname')->default('');
             $table->string('company_name');
+            $table->string('service')->default('');
             $table->string('position');
             $table->string('phone_number');
             $table->boolean('is_admin')->default(false);

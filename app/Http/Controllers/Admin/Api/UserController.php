@@ -20,6 +20,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'fullname' => 'required|string|max:255',
+            'service' => 'required|string|max:255',
             'password' => 'required|string|min:6',
             'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:9',
             'company_name' => 'required|string|max:255',
@@ -28,6 +29,8 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'fullname' => $request->fullname,
+            'service' => $request->service,
             'phone_number' => $request->phone_number,
             'company_name' => $request->company_name,
             'position' => $request->position,
