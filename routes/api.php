@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Api\UserController as AdminUserController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\SubscriberController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,7 +35,7 @@ Route::middleware('auth:api')->group(function () {
 });
 
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api', 'isAdmin'])->group(function () {
     Route::post('/admin/logout', [LogoutController::class, 'logout']);
     Route::post('/admin/register', [AdminUserController::class, 'register']);
     Route::get('/admin/users', [AdminUserController::class, 'showAllUsers']);
@@ -42,3 +43,5 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/admin/user/{user}/files', [AdminUserController::class, 'showFiles']);
     Route::delete('/admin/user/{user}/files', [AdminUserController::class, 'deleteFiles']);
 });
+
+Route::post('/store/subscribers', [SubscriberController::class, 'storeSubscribersEmail']);
