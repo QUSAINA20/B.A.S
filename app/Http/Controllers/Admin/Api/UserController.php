@@ -42,7 +42,7 @@ class UserController extends Controller
     }
     public function showAllUsers()
     {
-        $users = User::where('is_admin', 0)->paginate(10);
+        $users = User::where('is_admin', 0)->orderBy('created_at', 'desc')->paginate(10);
 
         return response()->json(['users' => $users]);
     }
