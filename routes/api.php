@@ -1,11 +1,15 @@
 <?php
 
-use App\Http\Controllers\Admin\Api\UserController as AdminUserController;
-use App\Http\Controllers\Api\LoginController;
-use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\SubscriberController;
+use App\Http\Controllers\Admin\Api\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\SubscriberController;
+use App\Http\Controllers\Admin\Api\UserController as AdminUserController;
+use App\Http\Controllers\Api\UserMessageController;
+
+// use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +46,11 @@ Route::middleware(['auth:api', 'isAdmin'])->group(function () {
     Route::post('/admin/user/{user}/upload', [AdminUserController::class, 'upload']);
     Route::get('/admin/user/{user}/files', [AdminUserController::class, 'showFiles']);
     Route::delete('/admin/user/{user}/files', [AdminUserController::class, 'deleteFiles']);
+    Route::get('/admin/showMessages',[MessageController::class,'index'])->name('showMessages');
+    Route::get('/admin/getMessage/{id}',[MessageController::class,'show'])->name('getMessage');
+    Route::get('/admin/search/{any}',[MessageController::class,'search'])->name('search');
 });
 
 Route::post('/store/subscribers', [SubscriberController::class, 'storeSubscribersEmail']);
+
+Route::post('/SaveMessage' , [UserMessageController::class, 'store'])->name('SaveMessage');
