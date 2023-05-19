@@ -20,7 +20,7 @@ class UserMessageController extends BaseController
             'position' => 'required',
             'number' => 'required|numeric',
             'service' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'content' => 'required',
         ]);
 
@@ -31,6 +31,4 @@ class UserMessageController extends BaseController
         $message = User_Message::create($input);
         return $this->sendResponse(new MessageResource($message), 'Message Sent successfully.');
     }
-
-
 }
