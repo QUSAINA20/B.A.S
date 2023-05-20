@@ -5,10 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
-use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\Api\UserMessageController;
 use App\Http\Controllers\Admin\Api\MessageController;
 use App\Http\Controllers\Admin\Api\UserController as AdminUserController;
+use App\Http\Controllers\Api\SubscriberController;
 
 // use Illuminate\Support\Facades\Route;
 
