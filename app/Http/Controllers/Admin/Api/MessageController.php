@@ -25,6 +25,6 @@ class MessageController extends BaseController
 
     public function search($any)
     {
-        return User_Message::where("name", "like", "%" . $any . "%")->orWhere("service", "like", "%" . $any . "%")->paginate(2);
+        return User_Message::where("name", "like", "%" . $any . "%")->orWhere("service", "like", "%" . $any . "%")->orWhere("company_name", "like", "%" . $any . "%")->paginate(2);
     }
 }
