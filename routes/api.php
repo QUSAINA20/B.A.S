@@ -47,11 +47,11 @@ Route::middleware(['auth:api', 'isAdmin'])->group(function () {
     Route::post('/admin/user/{user}/upload', [AdminUserController::class, 'upload']);
     Route::get('/admin/user/{user}/files', [AdminUserController::class, 'showFiles']);
     Route::delete('/admin/user/{user}/files', [AdminUserController::class, 'deleteFiles']);
-    Route::get('/admin/showMessages',[MessageController::class,'index'])->name('showMessages');
-    Route::get('/admin/getMessage/{id}',[MessageController::class,'show'])->name('getMessage');
-    Route::get('/admin/search/{any}',[MessageController::class,'search'])->name('search');
+    Route::get('/admin/messages',[MessageController::class,'index']);
+    Route::get('/admin/messages/{id}',[MessageController::class,'show']);
 });
 
 Route::post('/store/subscribers', [SubscriberController::class, 'storeSubscribersEmail']);
 
-Route::post('/SaveMessage' , [UserMessageController::class, 'store'])->name('SaveMessage');
+Route::post('/save/message' , [UserMessageController::class, 'store']);
+
