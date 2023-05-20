@@ -12,7 +12,18 @@ class MessageController extends BaseController
 {
     public function index(Request $request)
     {
-        $messages = User_Message::paginate(5);
+        $search = $request->input('search');
+        $query = User_Message::orderBy('latest' , 'desc');
+
+        if ($search) {
+            $query->where(function($q) use($search){
+                    $q->Where("name", "like" , "%".$search."%")
+                    ->orWhere("company_name", "like" , "%".$search."%")
+                    ->orWhere("service", "like" , "%".$search."%");
+                });
+        }
+
+        $messages = $query::paginate(5);
         return $this->sendResponse(MessageResource::collection($messages), 'Messages retrives successfully.');
     }
 
@@ -22,8 +33,4 @@ class MessageController extends BaseController
         return $this->sendResponse(MessageResource::collection($messages), 'Message retrived successfully.');
     }
 
-    public function search($any)
-    {
-        return User_Message::where("name", "like", "%" . $any . "%")->orWhere("service", "like", "%" . $any . "%")->paginate(2);
-    }
 }
