@@ -18,7 +18,10 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         if(Auth::user()->is_admin == false){
-            return redirect()->with('status' , 'Access Denied');
+            return response()->json([
+                'status' => 401,
+                'message' => "Access Denied!"
+            ], 401);
         }
         return $next($request);
     }
