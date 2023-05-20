@@ -53,14 +53,19 @@ class UserController extends Controller
         $user = $request->user();
 
         $files = $user->getMedia('documents');
-        $data = $files->map(function ($file) {
+
+        if ($files->isEmpty()) {
+            return response()->json(['message' => 'No files']);
+        }
+
+        $fileData = $files->map(function ($file) {
             return [
                 'id' => $file->id,
-                'url' => asset($file->getUrl()),
+                'url' => asset($file->getUrl())
             ];
         });
 
-        return response()->json(['files' => $data]);
+        return response()->json(['files' => $fileData]);
     }
 
     public function deleteFiles(Request $request)
@@ -70,7 +75,10 @@ class UserController extends Controller
 
         foreach ($files as $file) {
             $file = $user->getMedia('documents')->first();
-            $file->move($user, 'trash');
+            if ($file) {
+                $file->move($user, 'trash');
+                $file->delete();
+            }
         }
 
         return response()->json(['message' => 'Files moved to trash']);
@@ -89,8 +97,6 @@ class UserController extends Controller
 
         return response()->json(['documents' => $documents]);
     }
-
-
 
     public function getTotalFileSize(Request $request)
     {

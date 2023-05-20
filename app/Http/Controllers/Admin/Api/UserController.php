@@ -65,12 +65,18 @@ class UserController extends Controller
     public function showFiles(User $user)
     {
         $files = $user->getMedia('documents');
+
+        if ($files->isEmpty()) {
+            return response()->json(['message' => 'No files']);
+        }
+
         $fileData = $files->map(function ($file) {
             return [
                 'id' => $file->id,
                 'url' => asset($file->getUrl())
             ];
         });
+
         return response()->json(['files' => $fileData]);
     }
 
