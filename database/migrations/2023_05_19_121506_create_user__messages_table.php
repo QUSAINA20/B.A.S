@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('position');
             $table->string('number');
             $table->string('service');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('content');
             $table->timestamps();
         });

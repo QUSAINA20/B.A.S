@@ -37,12 +37,12 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
         event(new Registered($user));
-        $accessToken = $user->createToken('authToken')->accessToken;
+        $accessToken = $user->createToken('authToken')->plainTextToken;
         return response(['user' => $user, 'access_token' => $accessToken]);
     }
     public function showAllUsers()
     {
-        $users = User::where('is_admin', 0)->paginate(10);
+        $users = User::where('is_admin', 0)->orderBy('created_at', 'desc')->paginate(10);
 
         return response()->json(['users' => $users]);
     }

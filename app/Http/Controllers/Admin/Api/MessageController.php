@@ -12,6 +12,7 @@ class MessageController extends BaseController
 {
     public function index(Request $request)
     {
+
         $search = $request->input('search');
         $query = User_Message::orderBy('latest' , 'desc');
 
@@ -24,6 +25,7 @@ class MessageController extends BaseController
         }
 
         $messages = $query::paginate(5);
+
         return $this->sendResponse(MessageResource::collection($messages), 'Messages retrives successfully.');
     }
 
