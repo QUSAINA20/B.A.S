@@ -10,7 +10,8 @@ class LogoutController extends Controller
 {
     public function logout(Request $request)
     {
-        Auth::guard('api')->logout();
+        $request->user()->tokens()->delete();
         return response()->json(['message' => 'Logged out successfully']);
+
     }
 }

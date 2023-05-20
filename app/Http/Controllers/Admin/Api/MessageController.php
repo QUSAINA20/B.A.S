@@ -14,7 +14,7 @@ class MessageController extends BaseController
     {
 
         $search = $request->input('search');
-        $query = User_Message::orderBy('latest' , 'desc');
+        $query = User_Message::orderBy('created_at' , 'desc');
 
         if ($search) {
             $query->where(function($q) use($search){
@@ -24,15 +24,18 @@ class MessageController extends BaseController
                 });
         }
 
-        $messages = $query::paginate(5);
+        $messages = $query->paginate(5);
 
         return $this->sendResponse(MessageResource::collection($messages), 'Messages retrives successfully.');
     }
 
     public function show($id)
-    {
-        $messages = User_Message::find($id);
-        return $this->sendResponse(MessageResource::collection($messages), 'Message retrived successfully.');
-    }
+{
+    $message = User_Message::findOrFail($id);
+    $messages = collect([$message]);
+    return $this->sendResponse(MessageResource::collection($messages->map(function ($item) {
+        return new MessageResource($item);
+    })), 'Message retrieved successfully.');
+}
 
 }
