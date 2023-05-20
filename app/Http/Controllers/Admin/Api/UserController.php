@@ -37,7 +37,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
         event(new Registered($user));
-        $accessToken = $user->createToken('authToken')->accessToken;
+        $accessToken = $user->createToken('authToken')->plainTextToken;
         return response(['user' => $user, 'access_token' => $accessToken]);
     }
     public function showAllUsers()
