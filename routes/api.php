@@ -52,5 +52,5 @@ Route::middleware(['auth:api', 'isAdmin'])->group(function () {
 
 Route::post('/store/subscribers', [SubscriberController::class, 'storeSubscribersEmail']);
 
-Route::post('/SaveMessage' , [UserMessageController::class, 'store'])->name('SaveMessage');
+Route::post('/save/message' , [UserMessageController::class, 'store']);
 
