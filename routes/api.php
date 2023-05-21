@@ -28,7 +28,7 @@ use App\Http\Controllers\Api\SubscriberController;
 Route::post('/login', [LoginController::class, 'login']);
 
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api', 'checkUserId'])->group(function () {
     Route::post('/logout', [LogoutController::class, 'logout']);
     Route::post('/upload', [UserController::class, 'upload']);
     Route::get('/files', [UserController::class, 'showFiles']);
