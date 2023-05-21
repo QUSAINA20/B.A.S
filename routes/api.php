@@ -28,25 +28,24 @@ use App\Http\Controllers\Api\SubscriberController;
 Route::post('/login', [LoginController::class, 'login']);
 
 
-Route::middleware(['auth:api', 'checkUserId'])->group(function () {
-    Route::post('/logout', [LogoutController::class, 'logout']);
-    Route::post('/upload', [UserController::class, 'upload']);
-    Route::get('/files', [UserController::class, 'showFiles']);
-    Route::delete('/files', [UserController::class, 'deleteFiles']);
-    Route::get('/soft-delete-files', [UserController::class, 'showTrashFiles']);
-    Route::post('/files/restore', [UserController::class, 'restoreFiles']);
-    Route::get('/total-file-size', [UserController::class, 'getTotalFileSize']);
-    Route::delete('/empty-trash', [UserController::class, 'emptyTrash']);
-});
 
+Route::middleware('auth:api')->group(function () {
+    Route::post('/logout/{user_id}', [LogoutController::class, 'logout']);
+    Route::post('/upload/{user_id}', [UserController::class, 'upload']);
+    Route::get('/files/{user_id}', [UserController::class, 'showFiles']);
+    Route::delete('/files/{user_id}', [UserController::class, 'deleteFiles']);
+    Route::get('/soft-delete-files/{user_id}', [UserController::class, 'showTrashFiles']);
+    Route::post('/files/restore/{user_id}', [UserController::class, 'restoreFiles']);
+    Route::get('/total-file-size/{user_id}', [UserController::class, 'getTotalFileSize']);
+    Route::delete('/empty-trash/{user_id}', [UserController::class, 'emptyTrash']);
 
 Route::middleware(['auth:api', 'isAdmin'])->group(function () {
-    Route::post('/admin/logout', [LogoutController::class, 'logout']);
+    Route::post('/admin/logout/{user_id}', [LogoutController::class, 'logout']);
     Route::post('/admin/register', [AdminUserController::class, 'register']);
     Route::get('/admin/users', [AdminUserController::class, 'showAllUsers']);
-    Route::post('/admin/user/{user}/upload', [AdminUserController::class, 'upload']);
-    Route::get('/admin/user/{user}/files', [AdminUserController::class, 'showFiles']);
-    Route::delete('/admin/user/{user}/files', [AdminUserController::class, 'deleteFiles']);
+    Route::post('/admin/user/{user_id}/upload', [AdminUserController::class, 'upload']);
+    Route::get('/admin/user/{user_id}/files', [AdminUserController::class, 'showFiles']);
+    Route::delete('/admin/user/{user_id}/files', [AdminUserController::class, 'deleteFiles']);
     Route::get('/admin/messages', [MessageController::class, 'index']);
     Route::get('/admin/messages/{id}', [MessageController::class, 'show']);
 });
