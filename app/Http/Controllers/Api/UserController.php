@@ -38,7 +38,7 @@ class UserController extends Controller
         $trashSize = $user->getMedia('trash')->sum('size') / (1024 * 1024 * 1024);
 
         if (($totalSizeInGB + $documentsSize + $trashSize) > 1) {
-            return response()->json(['error' => 'Storage limit exceeded. Maximum allowed storage is 1 GB.']);
+            return response()->json(['error' => 'Storage limit exceeded. Maximum allowed storage (docs and trash) is 1 GB.']);
         }
 
         $urls = collect($files)->map(function ($file) use ($user) {
