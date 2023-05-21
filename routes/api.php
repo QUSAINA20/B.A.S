@@ -29,7 +29,7 @@ Route::post('/login', [LoginController::class, 'login']);
 
 
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api', 'checkUserId'])->group(function () {
     Route::post('/logout/{user_id}', [LogoutController::class, 'logout']);
     Route::post('/upload/{user_id}', [UserController::class, 'upload']);
     Route::get('/files/{user_id}', [UserController::class, 'showFiles']);
