@@ -33,10 +33,11 @@ class UserController extends Controller
             $totalSize += $file->getSize();
         }
         $totalSizeInGB = $totalSize / (1024 * 1024 * 1024);
-        $currentSize = $user->getMedia('documents')->sum('size');
-        $currentSizeInGB = $currentSize / (1024 * 1024 * 1024);
 
-        if (($totalSizeInGB + $currentSizeInGB) > 1) {
+        $documentsSize = $user->getMedia('documents')->sum('size') / (1024 * 1024 * 1024);
+        $trashSize = $user->getMedia('trash')->sum('size') / (1024 * 1024 * 1024);
+
+        if (($totalSizeInGB + $documentsSize + $trashSize) > 1) {
             return response()->json(['error' => 'Storage limit exceeded. Maximum allowed storage is 1 GB.']);
         }
 
@@ -47,43 +48,6 @@ class UserController extends Controller
 
         return response()->json(['urls' => $urls]);
     }
-
-    public function showFiles(Request $request)
-    {
-        $user = $request->user();
-
-        $files = $user->getMedia('documents');
-
-        if ($files->isEmpty()) {
-            return response()->json(['message' => 'No files']);
-        }
-
-        $fileData = $files->map(function ($file) {
-            return [
-                'id' => $file->id,
-                'url' => asset($file->getUrl())
-            ];
-        });
-
-        return response()->json(['files' => $fileData]);
-    }
-
-    public function deleteFiles(Request $request)
-    {
-        $user = $request->user();
-        $files = $request->input('files');
-
-        foreach ($files as $file) {
-            $file = $user->getMedia('documents')->first();
-            if ($file) {
-                $file->move($user, 'trash');
-                $file->delete();
-            }
-        }
-
-        return response()->json(['message' => 'Files moved to trash']);
-    }
-
     public function showTrashFiles(Request $request)
     {
         $user = $request->user();
