@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\SubscriberController;
 Route::post('/login', [LoginController::class, 'login']);
 
 
+
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout/{user_id}', [LogoutController::class, 'logout']);
     Route::post('/upload/{user_id}', [UserController::class, 'upload']);
@@ -37,8 +38,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/files/restore/{user_id}', [UserController::class, 'restoreFiles']);
     Route::get('/total-file-size/{user_id}', [UserController::class, 'getTotalFileSize']);
     Route::delete('/empty-trash/{user_id}', [UserController::class, 'emptyTrash']);
-});
-
 
 Route::middleware(['auth:api', 'isAdmin'])->group(function () {
     Route::post('/admin/logout/{user_id}', [LogoutController::class, 'logout']);
