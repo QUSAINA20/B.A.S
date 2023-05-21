@@ -15,13 +15,13 @@ class UserMessageController extends BaseController
         $input = $request->all();
 
         $validator = Validator::make($input, [
-            'name' => 'required',
-            'company_name' => 'required',
-            'position' => 'required',
-            'number' => 'required|numeric',
-            'service' => 'required',
+            'name' => 'required|string',
+            'company_name' => 'required|string',
+            'position' => 'required|string',
+            'number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:9',
+            'service' => 'required|string',
             'email' => 'required|email|unique:users',
-            'content' => 'required',
+            'content' => 'required|string',
         ]);
 
         if ($validator->fails()) {
