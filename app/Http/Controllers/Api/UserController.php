@@ -131,17 +131,18 @@ class UserController extends Controller
             $files = $user->getMedia('documents');
 
             if ($files->isEmpty()) {
-                return response()->json(['message' => 'No files']);
+                return response()->json(['message' => 'No files', 'files' => []]);
             }
-            $fileData = $files->map(function ($file) {
-                return [
-                    'id' => $file->id,
-                    'url' => asset($file->getUrl())
-                ];
-            });
-            return response()->json(['files' => $fileData]);
         }
+        $fileData = $files->map(function ($file) {
+            return [
+                'id' => $file->id,
+                'url' => asset($file->getUrl())
+            ];
+        });
+        return response()->json(['files' => $fileData]);
     }
+
 
     public function deleteFiles(Request $request, $id)
     {
