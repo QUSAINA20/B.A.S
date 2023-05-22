@@ -47,49 +47,70 @@ class UserController extends Controller
         return response()->json(['users' => $users]);
     }
 
-    public function upload(Request $request, User $user)
+    public function upload(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'files' => 'required|array',
-            'files.*' => 'required|file',
-        ]);
-        $files = $request->file('files');
-
-        $urls = collect($files)->map(function ($file) use ($user) {
-            $media = $user->addMedia($file)->toMediaCollection('documents');
-            return asset($media->getUrl());
-        });
-
-        return response()->json(['urls' => $urls]);
-    }
-    public function showFiles(User $user)
-    {
-        $files = $user->getMedia('documents');
-
-        if ($files->isEmpty()) {
-            return response()->json(['message' => 'No files']);
+        
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
         }
+        else{
+            $validator = Validator::make($request->all(), [
+                'files' => 'required|array',
+                'files.*' => 'required|file',
+            ]);
+            $files = $request->file('files');
+    
+            $urls = collect($files)->map(function ($file) use ($user) {
+                $media = $user->addMedia($file)->toMediaCollection('documents');
+                return asset($media->getUrl());
+            });
+    
+            return response()->json(['urls' => $urls]);
+        }
+    }
+    public function showFiles($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        else{
+            $files = $user->getMedia('documents');
 
-        $fileData = $files->map(function ($file) {
-            return [
-                'id' => $file->id,
-                'url' => asset($file->getUrl())
-            ];
-        });
+            if ($files->isEmpty()) {
+                return response()->json(['message' => 'No files']);
+            }
 
-        return response()->json(['files' => $fileData]);
+            $fileData = $files->map(function ($file) {
+                return [
+                    'id' => $file->id,
+                    'url' => asset($file->getUrl())
+                ];
+            });
+
+            return response()->json(['files' => $fileData]);
+        }
+        
     }
 
 
-    public function deleteFiles(Request $request, User $user)
+    public function deleteFiles(Request $request, $id)
     {
-        $files = $request->input('files');
 
-        foreach ($files as $file) {
-            $media = $user->media()->findOrFail($file);
-            $media->delete();
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
         }
+        else{
+            $files = $request->input('files');
 
-        return response()->json(['message' => 'Files deleted successfully']);
+            foreach ($files as $file) {
+                $media = $user->media()->findOrFail($file);
+                $media->delete();
+            }
+
+            return response()->json(['message' => 'Files deleted successfully']);
+        }
     }
 }
