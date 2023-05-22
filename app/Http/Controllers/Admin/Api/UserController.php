@@ -49,23 +49,22 @@ class UserController extends Controller
 
     public function upload(Request $request, $id)
     {
-        
+
         $user = User::find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
-        }
-        else{
+        } else {
             $validator = Validator::make($request->all(), [
                 'files' => 'required|array',
                 'files.*' => 'required|file',
             ]);
             $files = $request->file('files');
-    
+
             $urls = collect($files)->map(function ($file) use ($user) {
                 $media = $user->addMedia($file)->toMediaCollection('documents');
                 return asset($media->getUrl());
             });
-    
+
             return response()->json(['urls' => $urls]);
         }
     }
@@ -74,12 +73,11 @@ class UserController extends Controller
         $user = User::find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
-        }
-        else{
+        } else {
             $files = $user->getMedia('documents');
 
             if ($files->isEmpty()) {
-                return response()->json(['message' => 'No files']);
+                return response()->json(['message' => 'No files', 'files' => []]);
             }
 
             $fileData = $files->map(function ($file) {
@@ -91,7 +89,6 @@ class UserController extends Controller
 
             return response()->json(['files' => $fileData]);
         }
-        
     }
 
 
@@ -101,8 +98,7 @@ class UserController extends Controller
         $user = User::find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
-        }
-        else{
+        } else {
             $files = $request->input('files');
 
             foreach ($files as $file) {
