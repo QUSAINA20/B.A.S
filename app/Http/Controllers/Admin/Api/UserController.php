@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Api;
 
+use App\Events\FilesUploadedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -64,6 +65,7 @@ class UserController extends Controller
                 $media = $user->addMedia($file)->toMediaCollection('documents');
                 return asset($media->getUrl());
             });
+            event(new FilesUploadedEvent($user, $urls));
 
             return response()->json(['urls' => $urls]);
         }
