@@ -29,7 +29,7 @@ Route::post('/login', [LoginController::class, 'login']);
 
 
 
-Route::middleware(['auth:api', 'checkUserId'])->group(function () {
+Route::middleware(['auth:sanctum', 'checkUserId'])->group(function () {
     Route::post('/logout/{user_id}', [LogoutController::class, 'logout']);
     Route::post('/upload/{user_id}', [UserController::class, 'upload']);
     Route::get('/files/{user_id}', [UserController::class, 'showFiles']);
@@ -40,7 +40,7 @@ Route::middleware(['auth:api', 'checkUserId'])->group(function () {
     Route::delete('/empty-trash/{user_id}', [UserController::class, 'emptyTrash']);
 });
 
-Route::middleware(['auth:api', 'isAdmin'])->group(function () {
+Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::post('/admin/logout/{user_id}', [LogoutController::class, 'logout']);
     Route::post('/admin/register', [AdminUserController::class, 'register']);
     Route::get('/admin/users', [AdminUserController::class, 'showAllUsers']);
