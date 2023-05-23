@@ -77,7 +77,7 @@ class UserController extends Controller
         } else {
             $size = $user->getMedia('documents')->sum('size');
             $sizeInGB = $size / (1024 * 1024 * 1024);
-            $sizeInGB = number_format($sizeInGB, 2);
+            $sizeInGB = number_format($sizeInGB, 3);
 
             return response()->json(['total_file_size' => $sizeInGB . ' GB']);
         }
