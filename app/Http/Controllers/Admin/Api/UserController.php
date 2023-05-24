@@ -89,7 +89,7 @@ class UserController extends Controller
                 ];
             });
 
-            return response()->json(['files' => $fileData]);
+            return response()->json(['user' => $user, 'files' => $fileData]);
         }
     }
 
