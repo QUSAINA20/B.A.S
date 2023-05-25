@@ -83,7 +83,7 @@ class FolderController extends Controller
         }
 
 
-        
+
 
         $urls = collect($files)->map(function ($file) use ($folder, $user) {
             $media = $folder->addMedia($file)->toMediaCollection('documents');
@@ -94,7 +94,6 @@ class FolderController extends Controller
 
 
         return response()->json(['urls' => $urls]);
-
     }
 
     public function showFilesInFolder($id)
@@ -120,19 +119,20 @@ class FolderController extends Controller
     }
 
 
-    public function deleteFolders(Request $request){
+    public function deleteFolders(Request $request)
+    {
         $user = User::find(Auth::user()->id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         } else {
             $folders = $request->input('folders');
             foreach ($folders as $folder) {
-                $folder=Folder::find($folder);
+                $folder = Folder::find($folder);
                 if ($folder) {
                     $files = $folder->getMedia('documents');
                     foreach ($files as $file) {
                         $file = $folder->getMedia('documents')->find($file);
-                        $userFile = $user->getMedia('documents')->find($file->id+1);
+                        $userFile = $user->getMedia('documents')->find($file->id + 1);
                         if ($file) {
                             $file->move($user, 'trash');
                             $userFile->delete();

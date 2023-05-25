@@ -37,14 +37,15 @@ Route::middleware(['auth:sanctum', 'checkUserId'])->group(function () {
     Route::delete('/files/{user_id}', [UserController::class, 'deleteFiles']);
     Route::get('/soft-delete-files/{user_id}', [UserController::class, 'showTrashFiles']);
     Route::post('/files/restore/{user_id}', [UserController::class, 'restoreFiles']);
+    Route::post('/move-files-to-folder/{user_id}', [UserController::class, 'moveFilesToFolder']);
     Route::get('/total-file-size/{user_id}', [UserController::class, 'getTotalFileSize']);
     Route::delete('/empty-trash/{user_id}', [UserController::class, 'emptyTrash']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/folders', [FolderController::class , 'getAllFolders']);
-    Route::post('/folders', [FolderController::class , 'createFolder']);
-    Route::put('/folder/{folder_id}/edit' , [FolderController::class , 'editFolder']);
+    Route::get('/folders', [FolderController::class, 'getAllFolders']);
+    Route::post('/folders', [FolderController::class, 'createFolder']);
+    Route::put('/folder/{folder_id}/edit', [FolderController::class, 'editFolder']);
     Route::delete('/folders/delete', [FolderController::class, 'deleteFolders']);
     Route::post('/folders/{folder_id}', [FolderController::class, 'addFilesToFolder']);
     Route::get('/folders/{folder_id}', [FolderController::class, 'showFilesInFolder']);

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Folder;
 use Spatie\MediaLibrary\Models\Media;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Spatie\MediaLibrary\MediaCollections\MediaCollection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as ModelsMedia;
 
@@ -120,7 +122,30 @@ class UserController extends Controller
             return response()->json(['message' => 'Selected files deleted permanently from trash']);
         }
     }
+    public function moveFilesToFolder(Request $request)
+    {
+        $folderId = $request->input('folder_id');
+        $fileIds = $request->input('file_ids');
 
+        $folder = Folder::find($folderId);
+        if (!$folder) {
+            return response()->json(['error' => 'Folder not found'], 404);
+        }
+
+        $user = User::find(Auth::user()->id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        foreach ($fileIds as $fileId) {
+            $media = $user->getMedia('documents')->find($fileId);
+            if ($media) {
+                $media->copy($folder, 'documents');
+            }
+        }
+
+        return response()->json(['message' => 'Files moved to folder successfully']);
+    }
 
     public function showFiles($id)
     {
