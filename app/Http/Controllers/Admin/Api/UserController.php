@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Api;
 
 use App\Events\FilesUploadedEvent;
 use App\Http\Controllers\Controller;
+use App\Models\Folder;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -37,6 +38,10 @@ class UserController extends Controller
             'position' => $request->position,
             'password' => Hash::make($request->password),
         ]);
+        $folder = new Folder();
+        $folder->name = 'BAS';
+        $folder->user_id = $user->id;
+        $folder->save();
         event(new Registered($user));
         $accessToken = $user->createToken('authToken')->plainTextToken;
         return response(['user' => $user, 'access_token' => $accessToken]);
@@ -50,7 +55,6 @@ class UserController extends Controller
 
     public function upload(Request $request, $id)
     {
-
         $user = User::find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
@@ -59,17 +63,27 @@ class UserController extends Controller
                 'files' => 'required|array',
                 'files.*' => 'required|file',
             ]);
+
             $files = $request->file('files');
 
-            $urls = collect($files)->map(function ($file) use ($user) {
-                $media = $user->addMedia($file)->toMediaCollection('documents');
-                return asset($media->getUrl());
+            $folder = Folder::where('user_id', $user->id)->where('name', 'BAS')->first();
+
+            if (!$folder) {
+                return response()->json(['error' => 'Folder not found'], 404);
+            }
+
+            $urls = collect($files)->map(function ($file) use ($user, $folder) {
+                $media = $folder->addMedia($file)->toMediaCollection('documents');
+                $media->copy($user, 'documents');
+                return asset($media->getUrl());;
             });
+
             event(new FilesUploadedEvent($user, $urls));
 
             return response()->json(['urls' => $urls]);
         }
     }
+
     public function showFiles($id)
     {
         $user = User::find($id);
