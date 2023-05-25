@@ -82,6 +82,9 @@ class FolderController extends Controller
             return response()->json(['error' => 'Storage limit exceeded. Maximum allowed storage (docs and trash) is 1 GB.']);
         }
 
+
+        
+
         $urls = collect($files)->map(function ($file) use ($folder, $user) {
             $media = $folder->addMedia($file)->toMediaCollection('documents');
             $copiedMedia = $media->copy($user, 'documents');
@@ -91,6 +94,7 @@ class FolderController extends Controller
 
 
         return response()->json(['urls' => $urls]);
+
     }
 
     public function showFilesInFolder($id)
@@ -115,21 +119,23 @@ class FolderController extends Controller
         return response()->json(['files' => $fileData]);
     }
 
-    public function deleteFolders(Request $request)
-    {
+
+    public function deleteFolders(Request $request){
         $user = User::find(Auth::user()->id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         } else {
             $folders = $request->input('folders');
             foreach ($folders as $folder) {
-                $folder = Folder::find($folder);
+                $folder=Folder::find($folder);
                 if ($folder) {
                     $files = $folder->getMedia('documents');
                     foreach ($files as $file) {
                         $file = $folder->getMedia('documents')->find($file);
+                        $userFile = $user->getMedia('documents')->find($file->id+1);
                         if ($file) {
                             $file->move($user, 'trash');
+                            $userFile->delete();
                             $file->delete();
                         }
                     }
