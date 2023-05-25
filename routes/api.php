@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\UserMessageController;
 use App\Http\Controllers\Admin\Api\MessageController;
 use App\Http\Controllers\Admin\Api\UserController as AdminUserController;
+use App\Http\Controllers\Api\FolderController;
 use App\Http\Controllers\Api\SubscriberController;
 
 // use Illuminate\Support\Facades\Route;
@@ -39,6 +40,15 @@ Route::middleware(['auth:sanctum', 'checkUserId'])->group(function () {
     Route::get('/total-file-size/{user_id}', [UserController::class, 'getTotalFileSize']);
     Route::delete('/empty-trash/{user_id}', [UserController::class, 'emptyTrash']);
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/folders', [FolderController::class , 'getAllFolders']);
+    Route::post('/folders', [FolderController::class , 'createFolder']);
+    Route::put('/folder/{folder_id}/edit' , [FolderController::class , 'editFolder']);
+    Route::get('/folders/{folder_id}/delete', [FolderController::class, 'deleteFolders']);
+    Route::get('/folders/{folder_id}', [FolderController::class, 'showFolder']);
+});
+
 
 Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::post('/admin/logout/{user_id}', [LogoutController::class, 'logout']);
