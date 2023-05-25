@@ -145,4 +145,22 @@ class FolderController extends Controller
             return response()->json(['message' => 'Folders moved to trash']);
         }
     }
+    public function deleteFilesFromFolder(Request $request, $id)
+    {
+        $folder = Folder::find($id);
+        if (!$folder) {
+            return response()->json(['error' => 'Folder not found'], 404);
+        } else {
+            $files = $request->input('files');
+
+            foreach ($files as $file) {
+                $file = $folder->getMedia('documents')->find($file);
+                if ($file) {
+                    $file->delete();
+                }
+            }
+
+            return response()->json(['message' => 'Files removed from folder']);
+        }
+    }
 }

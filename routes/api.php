@@ -49,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/folders/delete', [FolderController::class, 'deleteFolders']);
     Route::post('/folders/{folder_id}', [FolderController::class, 'addFilesToFolder']);
     Route::get('/folders/{folder_id}', [FolderController::class, 'showFilesInFolder']);
+    Route::delete('/folders/{folder_id}/files', [FolderController::class, 'deleteFilesFromFolder']);
 });
 
 
