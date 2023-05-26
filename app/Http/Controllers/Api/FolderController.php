@@ -80,19 +80,11 @@ class FolderController extends Controller
             }
 
             
-            // $urls = collect($files)->map(function ($file) use ($folder) {
-            //     $media = $folder->addMedia($file)->toMediaCollection('documents');
-            //     return asset($media->getUrl());
-            // });
-
-            // foreach($files as $file){
-            //     $user->addMedia($file)->preservingOriginal()->toMediaCollection('documents');
-            // }
-
             $urls = collect($files)->map(function ($file) use ($folder, $user) {
                 $media = $folder->addMedia($file)->toMediaCollection('documents');
-                $user->addMedia($file)->toMediaCollection('documents');
-                return asset($media->getUrl());
+                $copiedMedia = $media->copy($user, 'documents');
+    
+                return $copiedMedia->getUrl();
             });
 
             
@@ -123,26 +115,28 @@ class FolderController extends Controller
     }
 
     public function deleteFolders(Request $request){
-            $user = User::find(Auth::user()->id);
-            if (!$user) {
-                return response()->json(['error' => 'User not found'], 404);
-            } else {
-                $folders = $request->input('folders');
-                foreach ($folders as $folder) {
-                    $folder=Folder::find($folder);
-                    if ($folder) {
-                        $files = $folder->getMedia('documents');
-                        foreach ($files as $file) {
-                            $file = $folder->getMedia('documents')->find($file);
-                            if ($file) {
-                                $file->move($user, 'trash');
-                                $file->delete();
-                            }
+        $user = User::find(Auth::user()->id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        } else {
+            $folders = $request->input('folders');
+            foreach ($folders as $folder) {
+                $folder=Folder::find($folder);
+                if ($folder) {
+                    $files = $folder->getMedia('documents');
+                    foreach ($files as $file) {
+                        $file = $folder->getMedia('documents')->find($file);
+                        $userFile = $user->getMedia('documents')->find($file->id+1);
+                        if ($file) {
+                            $file->move($user, 'trash');
+                            $userFile->delete();
+                            $file->delete();
                         }
-                        $folder->delete();
                     }
+                    $folder->delete();
                 }
-                return response()->json(['message' => 'Folders moved to trash']);
             }
+            return response()->json(['message' => 'Folders moved to trash']);
+        }
     }
 }
