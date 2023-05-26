@@ -42,7 +42,7 @@ class UserController extends Controller
         $folder->name = 'BAS';
         $folder->user_id = $user->id;
         $folder->save();
-        event(new Registered($user));
+        // event(new Registered($user));
         $accessToken = $user->createToken('authToken')->plainTextToken;
         return response(['user' => $user, 'access_token' => $accessToken]);
     }
@@ -97,7 +97,7 @@ class UserController extends Controller
             $files = $user->getMedia('documents');
 
             if ($files->isEmpty()) {
-                return response()->json(['message' => 'No files', 'files' => []]);
+                return response()->json(['message' => 'No files', 'files' => [], 'user' => $user]);
             }
 
             $fileData = $files->map(function ($file) {
