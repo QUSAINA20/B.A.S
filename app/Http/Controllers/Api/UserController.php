@@ -66,6 +66,9 @@ class UserController extends Controller
                     'url' => asset($file->getUrl()),
                 ];
             });
+            if ($documents->isEmpty()) {
+                return response()->json(['message' => 'No trashed files', 'documents' => []]);
+            }
 
             return response()->json(['documents' => $documents]);
         }

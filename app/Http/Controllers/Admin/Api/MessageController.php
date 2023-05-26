@@ -12,30 +12,30 @@ class MessageController extends BaseController
 {
     public function index(Request $request)
     {
-
         $search = $request->input('search');
-        $query = User_Message::orderBy('created_at' , 'desc');
+        $query = User_Message::orderBy('created_at', 'desc');
 
         if ($search) {
-            $query->where(function($q) use($search){
-                    $q->Where("name", "like" , "%".$search."%")
-                    ->orWhere("company_name", "like" , "%".$search."%")
-                    ->orWhere("service", "like" , "%".$search."%");
-                });
+            $query->where(function ($q) use ($search) {
+                $q->where("name", "like", "%" . $search . "%")
+                    ->orWhere("company_name", "like", "%" . $search . "%")
+                    ->orWhere("service", "like", "%" . $search . "%");
+            });
         }
 
         $messages = $query->paginate(5);
 
-        return $this->sendResponse(MessageResource::collection($messages), 'Messages retrives successfully.');
+        if ($messages->isEmpty()) {
+            return $this->sendResponse([], 'No messages found.');
+        }
+
+        return $this->sendResponse(MessageResource::collection($messages), 'Messages retrieved successfully.');
     }
 
     public function show($id)
-{
-    $message = User_Message::findOrFail($id);
-    $messages = collect([$message]);
-    return $this->sendResponse(MessageResource::collection($messages->map(function ($item) {
-        return new MessageResource($item);
-    })), 'Message retrieved successfully.');
-}
+    {
+        $message = User_Message::findOrFail($id);
 
+        return $this->sendResponse(MessageResource::collection([$message]), 'Message retrieved successfully.');
+    }
 }

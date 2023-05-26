@@ -15,8 +15,13 @@ class FolderController extends Controller
 
     public function getAllFolders()
     {
-        $folders = Folder::all()->where('user_id', Auth::user()->id);
-        return response()->json([$folders], 200);
+        $folders = Folder::where('user_id', Auth::user()->id)->get();
+
+        if ($folders->isEmpty()) {
+            return response()->json(['folders' => []]);
+        }
+
+        return response()->json(['folders' => $folders]);
     }
 
     public function createFolder(Request $request)
@@ -102,20 +107,24 @@ class FolderController extends Controller
         $folder = Folder::find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
+        } elseif (!$folder) {
+            return response()->json(['error' => 'Folder not found'], 404);
         } else {
             $files = $folder->getMedia('documents');
 
             if ($files->isEmpty()) {
                 return response()->json(['message' => 'No files', 'files' => []]);
             }
+
+            $fileData = $files->map(function ($file) {
+                return [
+                    'id' => $file->id,
+                    'url' => asset($file->getUrl())
+                ];
+            });
+
+            return response()->json(['files' => $fileData]);
         }
-        $fileData = $files->map(function ($file) {
-            return [
-                'id' => $file->id,
-                'url' => asset($file->getUrl())
-            ];
-        });
-        return response()->json(['files' => $fileData]);
     }
 
 
@@ -132,7 +141,7 @@ class FolderController extends Controller
                     $files = $folder->getMedia('documents');
                     foreach ($files as $file) {
                         $file = $folder->getMedia('documents')->find($file);
-                        $userFile = $user->getMedia('documents')->find($file->id + 1);
+                        $userFile = $user->getMedia('documents')->where('file_name', $file->file_name)->first();
                         if ($file) {
                             $file->move($user, 'trash');
                             $userFile->delete();

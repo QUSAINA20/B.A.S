@@ -50,6 +50,10 @@ class UserController extends Controller
     {
         $users = User::where('is_admin', 0)->orderBy('created_at', 'desc')->paginate(10);
 
+        if ($users->isEmpty()) {
+            return response()->json(['users' => []]);
+        }
+
         return response()->json(['users' => $users]);
     }
 
