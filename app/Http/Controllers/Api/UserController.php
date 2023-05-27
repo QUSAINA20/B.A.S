@@ -103,7 +103,7 @@ class UserController extends Controller
             return response()->json(['message' => 'Files restored successfully']);
         }
     }
-    public function emptyTrash(Request $request, $id)
+    public function deleteFilesPermanently(Request $request, $id)
     {
         $user = User::find($id);
         if (!$user) {
@@ -121,10 +121,25 @@ class UserController extends Controller
                     $media->delete();
                 }
             }
-
             return response()->json(['message' => 'Selected files deleted permanently from trash']);
         }
     }
+    public function emptyTrash($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        } else {
+            $media = $user->media()
+                ->where('collection_name', 'trash')
+                ->get();
+            foreach ($media as $file) {
+                $file->delete();
+            }
+        }
+        return response()->json(['message' => 'All files deleted permanently from trash']);
+    }
+
     public function moveFilesToFolder(Request $request)
     {
         $folderId = $request->input('folder_id');
