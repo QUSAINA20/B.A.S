@@ -39,6 +39,7 @@ Route::middleware(['auth:sanctum', 'checkUserId'])->group(function () {
     Route::post('/files/restore/{user_id}', [UserController::class, 'restoreFiles']);
     Route::post('/move-files-to-folder/{user_id}', [UserController::class, 'moveFilesToFolder']);
     Route::get('/total-file-size/{user_id}', [UserController::class, 'getTotalFileSize']);
+    Route::delete('/delete_files_permanently/{user_id}', [UserController::class, 'deleteFilesPermanently']);
     Route::delete('/empty-trash/{user_id}', [UserController::class, 'emptyTrash']);
 });
 
