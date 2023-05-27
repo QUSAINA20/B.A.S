@@ -113,7 +113,7 @@ class FolderController extends Controller
             $files = $folder->getMedia('documents');
 
             if ($files->isEmpty()) {
-                return response()->json(['message' => 'No files', 'files' => [], 'folder' => $folder]);
+                return response()->json(['message' => 'No files', 'files' => [], 'folder-name' => $folder->name]);
             }
 
             $fileData = $files->map(function ($file) {
@@ -123,7 +123,7 @@ class FolderController extends Controller
                 ];
             });
 
-            return response()->json(['folder' => $folder, 'files' => $fileData]);
+            return response()->json(['folder-name' => $folder->name, 'files' => $fileData]);
         }
     }
 
