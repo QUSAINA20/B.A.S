@@ -111,12 +111,10 @@ class FolderController extends Controller
             return response()->json(['error' => 'Folder not found'], 404);
         } else {
             $files = $folder->getMedia('documents');
-
-            if ($files->isEmpty()) {
-                return response()->json(['message' => 'No files', 'files' => [], 'folder-name' => $folder->name]);
-            }
-            
             $folders_info = $user->folders()->select('id', 'name')->get();
+            if ($files->isEmpty()) {
+                return response()->json(['message' => 'No files', 'files' => [], 'folder-name' => $folder->name, 'folders-info' => $folders_info]);
+            }
 
             $fileData = $files->map(function ($file) {
                 return [
@@ -124,7 +122,7 @@ class FolderController extends Controller
                     'url' => asset($file->getUrl()),
                 ];
             });
-            
+
             return response()->json(['folder-name' => $folder->name, 'files' => $fileData, 'folders-info' => $folders_info]);
         }
     }
