@@ -122,8 +122,8 @@ class FolderController extends Controller
                     'url' => asset($file->getUrl())
                 ];
             });
-
-            return response()->json(['folder-name' => $folder->name, 'files' => $fileData]);
+            $folders_info = Folder::all();
+            return response()->json(['folder-name' => $folder->name, 'files' => $fileData, 'folders-info' => $folders_info]);
         }
     }
 
