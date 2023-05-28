@@ -177,13 +177,14 @@ class UserController extends Controller
                 return response()->json(['message' => 'No files', 'files' => []]);
             }
         }
+        $folders_info = $user->folders()->select('id', 'name')->get();
         $fileData = $files->map(function ($file) {
             return [
                 'id' => $file->id,
                 'url' => asset($file->getUrl())
             ];
         });
-        return response()->json(['files' => $fileData]);
+        return response()->json(['files' => $fileData, 'folders_info' => $folders_info]);
     }
 
 

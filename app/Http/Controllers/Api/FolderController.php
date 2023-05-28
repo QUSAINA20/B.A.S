@@ -115,14 +115,16 @@ class FolderController extends Controller
             if ($files->isEmpty()) {
                 return response()->json(['message' => 'No files', 'files' => [], 'folder-name' => $folder->name]);
             }
+            
+            $folders_info = $user->folders()->select('id', 'name')->get();
 
             $fileData = $files->map(function ($file) {
                 return [
                     'id' => $file->id,
-                    'url' => asset($file->getUrl())
+                    'url' => asset($file->getUrl()),
                 ];
             });
-            $folders_info = Folder::all();
+            
             return response()->json(['folder-name' => $folder->name, 'files' => $fileData, 'folders-info' => $folders_info]);
         }
     }
