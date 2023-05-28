@@ -90,7 +90,7 @@ class UserController extends Controller
 
     public function showFiles($id)
     {
-        $user = User::find($id);
+        $user = User::with('media')->find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         } else {

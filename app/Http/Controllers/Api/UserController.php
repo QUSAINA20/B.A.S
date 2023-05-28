@@ -167,14 +167,14 @@ class UserController extends Controller
 
     public function showFiles($id)
     {
-        $user = User::find($id);
+        $user = User::with(['media', 'folders'])->find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         } else {
             $files = $user->getMedia('documents');
 
             if ($files->isEmpty()) {
-                return response()->json(['message' => 'No files', 'files' => []]);
+                return response()->json(['message' => 'No files', 'files' => [], 'user' => $user]);
             }
         }
         $folders_info = $user->folders()->select('id', 'name')->get();
@@ -184,7 +184,7 @@ class UserController extends Controller
                 'url' => asset($file->getUrl())
             ];
         });
-        return response()->json(['files' => $fileData, 'folders_info' => $folders_info]);
+        return response()->json(['user' => $user, 'files' => $fileData, 'folders_info' => $folders_info]);
     }
 
 

@@ -104,7 +104,7 @@ class FolderController extends Controller
     public function showFilesInFolder($id)
     {
         $user = User::find(Auth::user()->id);
-        $folder = Folder::find($id);
+        $folder = Folder::with('media')->find($id);
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         } elseif (!$folder) {

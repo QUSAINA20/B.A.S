@@ -21,6 +21,7 @@ class VerifyCsrfToken extends Middleware
         'http://127.0.0.1:8000/api/move-files-to-folder/*',
         'http://127.0.0.1:8000/api/total-file-size/*',
         'http://127.0.0.1:8000/api/empty-trash/*',
+        'http://127.0.0.1:8000/api/delete_files_permanently/*',
         'http://127.0.0.1:8000/api/folders',
         'http://127.0.0.1:8000/api/folders/*',
         'http://127.0.0.1:8000/api/folder/*/edit',
