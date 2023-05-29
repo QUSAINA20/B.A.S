@@ -42,7 +42,7 @@ class UserController extends Controller
         $folder->name = 'BAS';
         $folder->user_id = $user->id;
         $folder->save();
-        // event(new Registered($user));
+        event(new Registered($user));
         $accessToken = $user->createToken('authToken')->plainTextToken;
         return response(['user' => $user, 'access_token' => $accessToken]);
     }
@@ -103,7 +103,8 @@ class UserController extends Controller
             $fileData = $files->map(function ($file) {
                 return [
                     'id' => $file->id,
-                    'url' => asset($file->getUrl())
+                    'url' => asset($file->getUrl()),
+                    'created_at' => $file->created_at->toDateTimeString(),
                 ];
             });
 

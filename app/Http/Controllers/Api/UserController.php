@@ -64,6 +64,7 @@ class UserController extends Controller
                 return [
                     'id' => $file->id,
                     'url' => asset($file->getUrl()),
+                    'created_at' => $file->created_at->toDateTimeString(),
                 ];
             });
             if ($documents->isEmpty()) {
@@ -181,7 +182,8 @@ class UserController extends Controller
         $fileData = $files->map(function ($file) {
             return [
                 'id' => $file->id,
-                'url' => asset($file->getUrl())
+                'url' => asset($file->getUrl()),
+                'created_at' => $file->created_at->toDateTimeString(),
             ];
         });
         return response()->json(['user' => $user, 'files' => $fileData, 'folders_info' => $folders_info]);

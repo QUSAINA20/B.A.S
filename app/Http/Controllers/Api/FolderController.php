@@ -120,6 +120,7 @@ class FolderController extends Controller
                 return [
                     'id' => $file->id,
                     'url' => asset($file->getUrl()),
+                    'created_at' => $file->created_at->toDateTimeString(),
                 ];
             });
 
