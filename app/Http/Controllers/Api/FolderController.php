@@ -127,6 +127,35 @@ class FolderController extends Controller
             return response()->json(['folder-name' => $folder->name, 'files' => $fileData, 'folders-info' => $folders_info]);
         }
     }
+    public function moveFilesBetweenFolders(Request $request)
+    {
+        $sourceFolderId = $request->input('source_folder_id');
+        $destinationFolderId = $request->input('destination_folder_id');
+        $fileIds = $request->input('file_ids');
+
+        $sourceFolder = Folder::find($sourceFolderId);
+        $destinationFolder = Folder::find($destinationFolderId);
+
+        if (!$sourceFolder || !$destinationFolder) {
+            return response()->json(['error' => 'Source or destination folder not found'], 404);
+        }
+
+        $user = User::find(Auth::user()->id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        foreach ($fileIds as $fileId) {
+            $media = $sourceFolder->getMedia('documents')->find($fileId);
+            if ($media) {
+                $media->move($destinationFolder, 'documents');
+                $sourceFolder->deleteMedia($media);
+            }
+        }
+
+        return response()->json(['message' => 'Files moved to destination folder successfully']);
+    }
+
 
 
     public function deleteFolders(Request $request)
