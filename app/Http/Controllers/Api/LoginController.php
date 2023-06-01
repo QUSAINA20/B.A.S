@@ -14,8 +14,8 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
-        if (Auth::attempt(['email' => $validator['email'], 'password' => $validator['password']])) {
+        $remember = $request->has('remember');
+        if (Auth::attempt(['email' => $validator['email'], 'password' => $validator['password']], $remember)) {
             $user = Auth::user();
             $accessToken = $user->createToken('authToken')->plainTextToken;
             return response(['user' => $user, 'access_token' => $accessToken]);
