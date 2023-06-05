@@ -21,7 +21,20 @@ class FolderController extends Controller
             return response()->json(['folders' => []]);
         }
 
-        return response()->json(['folders' => $folders]);
+        $foldersData = [];
+        foreach ($folders as $folder) {
+            $folderSizeInMegabits = $this->calculateFolderSize($folder);
+            $folderData = [
+                'id' => $folder->id,
+                'name' => $folder->name,
+                'size_in_megabits' => $folderSizeInMegabits,
+                'created_at' => $folder->created_at->toDateTimeString(),
+                'user_id' => $folder->user_id
+            ];
+            $foldersData[] = $folderData;
+        }
+
+        return response()->json(['folders' => $foldersData]);
     }
 
     public function createFolder(Request $request)
@@ -87,17 +100,12 @@ class FolderController extends Controller
             return response()->json(['error' => 'Storage limit exceeded. Maximum allowed storage (docs and trash) is 1 GB.']);
         }
 
-
-
-
         $urls = collect($files)->map(function ($file) use ($folder, $user) {
             $media = $folder->addMedia($file)->toMediaCollection('documents');
             $copiedMedia = $media->copy($user, 'documents');
 
             return $copiedMedia->getUrl();
         });
-
-
         return response()->json(['urls' => $urls]);
     }
 
@@ -117,10 +125,12 @@ class FolderController extends Controller
             }
 
             $fileData = $files->map(function ($file) {
+                $fileSizeInMegabits = round($file->size / (1024 * 1024), 2);
                 return [
                     'id' => $file->id,
                     'url' => asset($file->getUrl()),
                     'created_at' => $file->created_at->toDateTimeString(),
+                    'size_in_megabits' => $fileSizeInMegabits,
                 ];
             });
 
@@ -201,5 +211,14 @@ class FolderController extends Controller
 
             return response()->json(['message' => 'Files removed from folder']);
         }
+    }
+    private function calculateFolderSize($folder)
+    {
+        $totalSize = 0;
+        foreach ($folder->media->where('collection_name', 'documents') as $media) {
+            $totalSize += $media->size;
+        }
+        $folderSizeInMegabits = round($totalSize / (1024 * 1024), 2);
+        return $folderSizeInMegabits;
     }
 }

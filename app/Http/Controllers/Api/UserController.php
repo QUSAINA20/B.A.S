@@ -61,10 +61,12 @@ class UserController extends Controller
             return response()->json(['error' => 'User not found'], 404);
         } else {
             $documents = $user->getMedia('trash')->map(function ($file) {
+                $fileSizeInMegabits = round($file->size / (1024 * 1024), 2);
                 return [
                     'id' => $file->id,
                     'url' => asset($file->getUrl()),
                     'created_at' => $file->created_at->toDateTimeString(),
+                    'size_in_megabits' => $fileSizeInMegabits,
                 ];
             });
             if ($documents->isEmpty()) {
@@ -180,10 +182,12 @@ class UserController extends Controller
         }
         $folders_info = $user->folders()->select('id', 'name')->get();
         $fileData = $files->map(function ($file) {
+            $fileSizeInMegabits = round($file->size / (1024 * 1024), 2);
             return [
                 'id' => $file->id,
                 'url' => asset($file->getUrl()),
                 'created_at' => $file->created_at->toDateTimeString(),
+                'size_in_megabits' => $fileSizeInMegabits,
             ];
         });
         return response()->json(['user' => $user, 'files' => $fileData, 'folders_info' => $folders_info]);
